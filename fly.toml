@@ -1,0 +1,31 @@
+# fly.toml for burgerlove-books (audiobookshelf)
+# Deploy: fly deploy --app burgerlove-books
+
+app = 'burgerlove-books'
+primary_region = 'iad'
+
+[build]
+
+[env]
+  # Store metadata inside the config volume so one mount covers both
+  METADATA_PATH = '/config/metadata'
+
+[[mounts]]
+  source = 'books_config'
+  destination = '/config'
+  initial_size = '2gb'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '5GB'
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'

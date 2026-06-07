@@ -50,7 +50,12 @@ ARG NUSQLITE3_PATH
 RUN apk add --no-cache --update \
   tzdata \
   ffmpeg \
-  tini
+  tini \
+  fuse3 \
+  rclone
+
+# Allow fuse mounts to be visible to other processes (needed for rclone --allow-other)
+RUN echo "user_allow_other" >> /etc/fuse.conf
 
 WORKDIR /app
 
@@ -58,6 +63,8 @@ WORKDIR /app
 COPY --from=build-client /client/dist /app/client/dist
 COPY --from=build-server /server /app
 COPY --from=build-server ${NUSQLITE3_PATH} ${NUSQLITE3_PATH}
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
 EXPOSE 80
 
@@ -69,5 +76,11 @@ ENV SOURCE="docker"
 ENV NUSQLITE3_DIR=${NUSQLITE3_DIR}
 ENV NUSQLITE3_PATH=${NUSQLITE3_PATH}
 
+# R2 credentials — set these at runtime, not build time
+# ENV R2_ACCESS_KEY_ID=
+# ENV R2_SECRET_ACCESS_KEY=
+# ENV R2_ACCOUNT_ID=
+# ENV R2_BUCKET_NAME=
+
 ENTRYPOINT ["tini", "--"]
-CMD ["node", "index.js"]
+CMD ["/app/start.sh"]
