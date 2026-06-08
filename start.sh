@@ -26,7 +26,8 @@ mount_r2() {
     --cache-dir /config/rclone-cache \
     --vfs-cache-max-size 2G \
     --vfs-read-chunk-size 128M \
-    --buffer-size 64M \
+    --buffer-size 32M \
+    --transfers 2 \
     --dir-cache-time 72h \
     --poll-interval 30m \
     --low-level-retries 10 \
