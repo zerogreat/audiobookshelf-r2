@@ -28,7 +28,7 @@ mount_r2() {
     --vfs-read-chunk-size 128M \
     --buffer-size 32M \
     --transfers 2 \
-    --dir-cache-time 72h \
+    --dir-cache-time 5m \
     --poll-interval 30m \
     --low-level-retries 10 \
     --retries 5 \
